@@ -14,5 +14,11 @@ public class HexConvertionUtilTest {
         System.out.println(str);
         num = HexConversionUtil.thirtyTwo2Decimal(str);
         System.out.println(num);
+        
+        String rot16 = "hyukjnkpoghij23";
+        rot16 = HexConversionUtil.rot16(rot16);
+        System.out.println(rot16);
+        rot16 = HexConversionUtil.rot16(rot16);
+        System.out.println(rot16);
     }
 }

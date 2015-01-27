@@ -35,6 +35,13 @@ public class HexConversionUtil {
         '2', '3', '4', '5'
     };
     
+    final static String rot16OldStr, rot16ChangeStr;
+    
+    static {
+        rot16OldStr = String.valueOf(digits32, 0, 32);
+        rot16ChangeStr = String.valueOf(digits32, 16,16) + String.valueOf(digits32, 0, 16);
+    }
+    
     /**
      * 将10进制转为指定进制字串
      * Alan
@@ -182,7 +189,7 @@ public class HexConversionUtil {
     }
     
     /**
-     * 将字节数组转为16进制
+     * 将字节数组转为32进制
      * Alan
      * @param bytes
      * @return
@@ -191,11 +198,29 @@ public class HexConversionUtil {
     public static String byte2Sixteen(byte[] bytes) {
         char[] out = new char[bytes.length << 1];
         for (int i = 0, j = 0; i < bytes.length; i++) {
-            out[j++] = digits64[(0xF0 & bytes[i]) >>> 4];
-            out[j++] = digits64[0x0F & bytes[i]];
+            out[j++] = digits32[(0xe0 & bytes[i]) >>> 5];
+            out[j++] = digits32[0x1F & bytes[i]];
         }
         return new String(out);
     }
+    
+    /**
+     * 字节数组转32进制
+     * Alan
+     * @param bytes
+     * @return
+     * 2015-1-27 下午10:10:17
+     */
+    public static String byte2ThirtyTwo(byte[] bytes) {
+        char[] out = new char[bytes.length << 1];
+        for (int i = 0, j = 0; i < bytes.length; i++) {
+            out[j++] = digits16[(0xF0 & bytes[i]) >>> 4];
+            out[j++] = digits16[0x0F & bytes[i]];
+        }
+        return new String(out);
+    }
+    //TODO 32进制转字节数组
+    
     
     /**
      * 字节数组转md5
@@ -226,7 +251,7 @@ public class HexConversionUtil {
     }
 
     /**
-     * 将字符串转为md5码
+     * 将字符串转为md5码(32位)
      * Alan
      * @param str
      * @param encoding
@@ -237,5 +262,33 @@ public class HexConversionUtil {
      */
     public static String toMd5(String str, String encoding) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         return byte2Md5(str.getBytes(encoding));
+    }
+    /**
+     * 将字符串md5加密（16位）
+     * Alan
+     * @param str
+     * @param encoding
+     * @return
+     * 2015-1-27 下午9:46:00
+     * @throws UnsupportedEncodingException 
+     * @throws NoSuchAlgorithmException 
+     */
+    public static String toMd5For16(String str, String encoding) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        String md5 = toMd5(str, encoding);
+        return md5.substring(0, 16);
+    }
+    
+    /**
+     * Rot16加密（仿rot13）
+     * Alan
+     * @param str
+     * @return
+     * 2015-1-25 下午9:05:31
+     */
+    public static String rot16(String str){
+        StringBuffer sb = new StringBuffer();
+        for (char c : str.toCharArray())
+            sb.append(rot16ChangeStr.charAt(rot16OldStr.indexOf(c)));
+        return sb.toString();
     }
 }
