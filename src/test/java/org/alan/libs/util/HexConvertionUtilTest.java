@@ -20,5 +20,32 @@ public class HexConvertionUtilTest {
         System.out.println(rot16);
         rot16 = HexConversionUtil.rot16(rot16);
         System.out.println(rot16);
+        
+        str = HexConversionUtil.decimal2Sixteen(12453);
+        System.out.println(str);
+        num = HexConversionUtil.sixteen2Decimal(str);
+        System.out.println(num);
+        
+        byte[] bytes = {0, 12, 1, 2, 98, 50, 78, 22, 33, 55, 99, 101, 43, 23, 34, 111, 121, 127, 33, 99, 56, 34, 56};
+        str = HexConversionUtil.byte2Sixteen(bytes);
+        System.out.println(str);
+        bytes = HexConversionUtil.sixteen2Byte(str);
+        for (byte b : bytes)
+            System.out.print(b + ",");
+        System.out.println();
+        
+        str = HexConversionUtil.byte2ThirtyTwo(bytes);
+        System.out.println(str);
+        bytes = HexConversionUtil.thirtyTwo2Byte(str);
+        for (byte b : bytes)
+            System.out.print(b + ",");
+        System.out.println();
+        
+        str = HexConversionUtil.byte2SixtyFour(bytes);
+        System.out.println(str);
+        bytes = HexConversionUtil.sixtyFour2Byte(str);
+        for (byte b : bytes)
+            System.out.print(b + ",");
+        System.out.println();
     }
 }

@@ -92,6 +92,49 @@ public class HexConversionUtil {
         return new String(buf, charPos, (size - charPos));
     }
     
+    /**
+     * 把十进制转为16进制
+     * Alan
+     * @param number
+     * @return
+     * 2015-1-28 下午8:52:26
+     */
+    public static String decimal2Sixteen(long number) {
+        int size = 1 << 4;
+        char[] buf = new char[size];
+        int charPos = size;
+        long mask = size -1;
+        do {
+            buf[--charPos] = digits16[(int)(number & mask)];
+            number >>>= 4;
+        } while (number != 0);
+        return new String(buf, charPos, (size - charPos));
+    }
+    
+    /**
+     * 16进制转10进制
+     * Alan
+     * @param decompStr
+     * @return
+     * 2015-1-28 下午8:53:49
+     */
+    public static long sixteen2Decimal(String decompStr) {
+        long result = 0;
+        for(int n=0; n<decompStr.length(); n++) {
+            result <<= 4;
+            result += getCharIndexNum4Sixteen(decompStr.charAt(n));
+        }        
+        
+        return result;
+    }
+    
+    /**
+     * 32进制转十进制
+     * Alan
+     * @param decompStr
+     * @return
+     * 2015-1-28 下午8:53:13
+     */
     public static long thirtyTwo2Decimal(String decompStr) {
         long result = 0;
         for(int n=0; n<decompStr.length(); n++) {
@@ -163,9 +206,25 @@ public class HexConversionUtil {
      */
     private static long getCharIndexNum4ThirtyTwo(char ch) {  
         if (ch >= '0' && ch <= '5') {
-            return ch - '0' + 27;
+            return ch - '0' + 26;
         } else if (ch >= 'a' && ch <= 'z') {
             return ch - 'a';
+        }
+        return 0;
+    }
+    
+    /**
+     * 用于16进制转10进制
+     * Alan
+     * @param ch
+     * @return
+     * 2015-1-28 下午8:54:18
+     */
+    private static long getCharIndexNum4Sixteen(char ch) {  
+        if (ch >= '0' && ch <= '9') {
+            return ch - '0';
+        } else if (ch >= 'a' && ch <= 'z') {
+            return ch - 'a' + 10;
         }
         return 0;
     }
@@ -195,7 +254,7 @@ public class HexConversionUtil {
      * @return
      * 2015-1-20 下午9:59:39
      */
-    public static String byte2Sixteen(byte[] bytes) {
+    public static String byte2ThirtyTwo(byte[] bytes) {
         char[] out = new char[bytes.length << 1];
         for (int i = 0, j = 0; i < bytes.length; i++) {
             out[j++] = digits32[(0xe0 & bytes[i]) >>> 5];
@@ -205,13 +264,13 @@ public class HexConversionUtil {
     }
     
     /**
-     * 字节数组转32进制
+     * 字节数组转16进制
      * Alan
      * @param bytes
      * @return
      * 2015-1-27 下午10:10:17
      */
-    public static String byte2ThirtyTwo(byte[] bytes) {
+    public static String byte2Sixteen(byte[] bytes) {
         char[] out = new char[bytes.length << 1];
         for (int i = 0, j = 0; i < bytes.length; i++) {
             out[j++] = digits16[(0xF0 & bytes[i]) >>> 4];
@@ -219,8 +278,78 @@ public class HexConversionUtil {
         }
         return new String(out);
     }
-    //TODO 32进制转字节数组
     
+    /**
+     * 64进制转字节数组
+     * Alan
+     * @param str
+     * @return
+     * 2015-1-28 下午10:05:37
+     */
+    public static byte[] sixtyFour2Byte(String str) {
+        int len = str.length();
+        //因为一个字节使用2个字符保存，所以str长度必须是偶数才对
+        if ((len & 0x01) != 0) {
+            throw new RuntimeException("六十四进制字符串格式有误");
+        }
+        byte[] out = new byte[len >> 1];//两个字符转为一个byte数字
+        long temp;
+        for (int i = 0, j = 0; j < len; i++, j++) {
+            temp = getCharIndexNum4SixtyFour(str.charAt(j)) << 6;
+            j++;
+            temp = temp | getCharIndexNum4SixtyFour(str.charAt(j));
+            out[i] = (byte) temp;
+        }
+        return out;
+    }
+    
+    /**
+     * 32进制转字节数组
+     * Alan
+     * @param str
+     * @return
+     * 2015-1-28 下午10:03:25
+     */
+    public static byte[] thirtyTwo2Byte(String str) {
+        int len = str.length();
+        //因为一个字节使用2个字符保存，所以str长度必须是偶数才对
+        if ((len & 0x01) != 0) {
+            throw new RuntimeException("三十二进制字符串格式有误");
+        }
+        byte[] out = new byte[len >> 1];//两个字符转为一个byte数字
+        long temp;
+        for (int i = 0, j = 0; j < len; i++, j++) {
+            temp = getCharIndexNum4ThirtyTwo(str.charAt(j)) << 5;
+            j++;
+            temp = temp | getCharIndexNum4ThirtyTwo(str.charAt(j));
+            out[i] = (byte) temp;
+        }
+        return out;
+    }
+    
+    /**
+     * 16进制转byte数组
+     * Alan
+     * @param str
+     * @return
+     * 2015-1-28 下午9:02:45
+     */
+    public static byte[] sixteen2Byte(String str) {
+        int len = str.length();
+        //因为一个字节使用2个字符保存，所以str长度必须是偶数才对
+        if ((len & 0x01) != 0) {
+            throw new RuntimeException("十六进制字符串格式有误");
+        }
+        byte[] out = new byte[len >> 1];//两个字符转为一个byte数字
+        long temp;
+        for (int i = 0, j = 0; j < len; i++, j++) {
+            temp = getCharIndexNum4Sixteen(str.charAt(j)) << 4;
+            j++;
+            temp = temp | getCharIndexNum4Sixteen(str.charAt(j));
+            out[i] = (byte) temp;
+        }
+        return out;
+    }
     
     /**
      * 字节数组转md5
