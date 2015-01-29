@@ -371,4 +371,19 @@ public class StringUtil {
 		}
 		return true;
 	}
+
+	
+	/**
+	 * 将字符串中的特殊字符（这里只是针对windows文件名的特殊字符）替换为指定字符
+	 * Alan
+	 * @param str
+	 * @param c
+	 * @return
+	 * 2015-1-29 下午9:21:58
+	 */
+    public static String repWinFileSpeChar(String str, String c) {
+        return str.replace("?", c).replace("、", c).replace("/", c).replace("\\", c)
+                .replace("*", c).replace("\"", c).replace("'", c).replace("<", c).replace(">", c)
+                .replace("|", c);
+    }
 }

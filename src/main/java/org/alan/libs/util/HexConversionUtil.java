@@ -3,6 +3,7 @@ package org.alan.libs.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 /**
@@ -418,6 +419,20 @@ public class HexConversionUtil {
         StringBuffer sb = new StringBuffer();
         for (char c : str.toCharArray())
             sb.append(rot16ChangeStr.charAt(rot16OldStr.indexOf(c)));
+        return sb.toString();
+    }
+    
+    /**
+     * 随机产生指定个数32进制字符串
+     * Alan
+     * @param num
+     * @return
+     * 2015-1-29 下午8:52:30
+     */
+    public static String randThirtyTwoStr(int num) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < num; i++) 
+            sb.append(digits32[ThreadLocalRandom.current().nextInt(0, 32)]);
         return sb.toString();
     }
 }
